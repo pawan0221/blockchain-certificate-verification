@@ -1,0 +1,4 @@
+mkdir frontend
+await contract.verifyCertificate("CERT001")
+)"A+""Blockchain Development","Pawan Soni","CERT001",await contract.issueCertificate(
+)"0x5FbDB2315678afecb367f032d93F642f64180aa3""CertificateVerification",const contract = await ethers.getContractAt(

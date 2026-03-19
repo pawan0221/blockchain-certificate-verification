@@ -1,0 +1,297 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blockchain Certificate Verification</title>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+background:#f0f4f8;
+min-height:100vh;
+padding:2rem 1rem;
+color:#1a202c;
+}
+
+.app{max-width:680px;margin:0 auto}
+
+/* hero */
+.hero{
+background:#185FA5;
+border-radius:16px;
+padding:1.5rem;
+margin-bottom:1.5rem;
+display:flex;
+align-items:center;
+gap:16px;
+}
+
+.hero-icon{
+width:52px;
+height:52px;
+border-radius:14px;
+background:rgba(255,255,255,0.15);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.hero-text h1{font-size:18px;color:#fff}
+.hero-text p{font-size:13px;color:rgba(255,255,255,.75)}
+
+/* stats */
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+margin-bottom:1.5rem;
+}
+
+.stat{
+background:#fff;
+border-radius:12px;
+padding:16px 12px;
+text-align:center;
+border:1px solid #e2e8f0;
+}
+
+.stat-n{font-size:26px;font-weight:700}
+.stat-l{font-size:11px;color:#718096}
+
+/* tabs */
+.tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+
+.tab{
+flex:1;
+padding:10px;
+cursor:pointer;
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:10px;
+font-size:13px;
+}
+
+.tab.active{
+background:#185FA5;
+color:#fff;
+}
+
+/* sections */
+.section{display:none}
+.section.active{display:block}
+
+/* card */
+.card{
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:14px;
+padding:1.5rem;
+}
+
+/* inputs */
+.field{margin-bottom:12px}
+
+.field input{
+width:100%;
+padding:10px;
+border:1px solid #e2e8f0;
+border-radius:8px;
+}
+
+.input-row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+/* button */
+.btn{
+width:100%;
+padding:12px;
+background:#185FA5;
+color:#fff;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+.btn:hover{background:#0C447C}
+
+/* result */
+.result-box{
+margin-top:1rem;
+padding:14px;
+border-radius:12px;
+display:none;
+}
+
+.result-valid{
+background:#f0fff4;
+border:1px solid #9ae6b4;
+}
+
+.result-invalid{
+background:#fff5f5;
+border:1px solid #feb2b2;
+}
+
+/* chain */
+.block-card{
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:12px;
+padding:14px;
+margin-bottom:10px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+<div class="hero">
+<div class="hero-text">
+<h1>Blockchain Certificate System</h1>
+<p>Tamper-proof credentials on blockchain</p>
+</div>
+</div>
+
+
+<div class="stats">
+<div class="stat">
+<div class="stat-n" id="s-total">0</div>
+<div class="stat-l">Certificates</div>
+</div>
+
+<div class="stat">
+<div class="stat-n" id="s-blocks">1</div>
+<div class="stat-l">Blocks</div>
+</div>
+
+<div class="stat">
+<div class="stat-n" id="s-verified">0</div>
+<div class="stat-l">Verified</div>
+</div>
+</div>
+
+
+<div class="tabs">
+<button class="tab active" onclick="switchTab('issue')">Issue</button>
+<button class="tab" onclick="switchTab('verify')">Verify</button>
+<button class="tab" onclick="switchTab('chain')">Chain</button>
+</div>
+
+
+<!-- Issue -->
+
+<div id="tab-issue" class="section active">
+
+<div class="card">
+
+<div class="input-row">
+<div class="field">
+<input id="certId" placeholder="Certificate ID">
+</div>
+
+<div class="field">
+<input id="grade" placeholder="Grade">
+</div>
+</div>
+
+<div class="field">
+<input id="name" placeholder="Student Name">
+</div>
+
+<div class="field">
+<input id="course" placeholder="Course">
+</div>
+
+<button class="btn" onclick="issueCertificate()">
+Issue Certificate
+</button>
+
+</div>
+
+<div id="issue-result" class="result-box"></div>
+
+</div>
+
+
+
+<!-- Verify -->
+
+<div id="tab-verify" class="section">
+
+<div class="card">
+
+<div class="field">
+<input id="verifyId" placeholder="Enter certificate ID">
+</div>
+
+<button class="btn" onclick="verifyCertificate()">
+Verify Certificate
+</button>
+
+</div>
+
+<div id="verify-result" class="result-box"></div>
+
+</div>
+
+
+
+<!-- Chain -->
+
+<div id="tab-chain" class="section">
+
+<div id="chain-view"></div>
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+function switchTab(tab){
+
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+
+if(tab==="issue"){
+document.querySelectorAll(".tab")[0].classList.add("active")
+}
+
+if(tab==="verify"){
+document.querySelectorAll(".tab")[1].classList.add("active")
+}
+
+if(tab==="chain"){
+document.querySelectorAll(".tab")[2].classList.add("active")
+}
+
+document.getElementById("tab-"+tab).classList.add("active")
+
+if(tab==="chain"){
+renderChain()
+}
+
+}
+
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
